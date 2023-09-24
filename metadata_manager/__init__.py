@@ -5,6 +5,19 @@ import json
 import hashlib
 from datetime import datetime, timedelta
 
+# Example metadata file
+# {
+#   "title": "my test title",
+#   "description": "my test description",
+#   "tags": ["test tag1", "test tag2"],
+#   "privacyStatus": "private",
+#   "madeForKids": false,
+#   "publicStatsViewable": true,
+#   "publishAt": "2017-06-01T12:05:00+02:00",
+#   "categoryId": "22", // people and blogs
+#   "language":  "en"
+# }
+
 class MetadataManager:
     def __init__(self, channelId, store_file):
         self.channelId = channelId
@@ -33,14 +46,26 @@ class MetadataManager:
         self.data[self.channelId] = next_publish_date.strftime("%Y-%m-%dT%H:%M:%S")
         self.save_data()
 
-        return next_publish_date
-
-def get_channel_id_from_secrets(secrets_path):
-    with open(secrets_path, 'r') as f:
-        content = f.read()
-    return hashlib.md5(content.encode()).hexdigest()
-
-# Usage example:
-# channelId = get_channel_id_from_secrets('path_to/client_secrets.json')
-# manager = MetadataManager(channelId, 'path_to/store_file.json')
-# publish_at = manager.get_next_publish_date(48)  # For 48 hours
+        return next_publish_date.strftime("%Y-%m-%dT%H:%M:%S")
+    
+    def get_metadata(self, title, description, tags):
+        next_publish_date = self.get_next_publish_date()
+        return {
+            "title": title,
+            "description": description,
+            "tags": tags,
+            "privacyStatus": "private",
+            "madeForKids": "false",
+            "publicStatsViewable": "true",
+            "publishAt": next_publish_date,
+            "categoryId": '22',
+            "language":  'en'
+        }
+    
+    def save_metadata_to_file(self, path, file_name, metadata):
+        # remember to create folders if folders not exists
+        if not os.path.exists(path):
+            os.makedirs(path)
+        file_path = os.path.join(path, file_name)
+        with open(file_path, 'w') as f:
+            json.dump(metadata, f, indent=4)
