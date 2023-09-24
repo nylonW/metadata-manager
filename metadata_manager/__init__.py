@@ -56,8 +56,8 @@ class MetadataManager:
             "description": description,
             "tags": tags,
             "privacyStatus": "private",
-            "madeForKids": "false",
-            "publicStatsViewable": "true",
+            "madeForKids": True,
+            "publicStatsViewable": False,
             "publishAt": next_publish_date,
             "categoryId": '22',
             "language":  'en'
