@@ -44,10 +44,10 @@ class MetadataManager:
             next_publish_date = arrow.now().isoformat()
 
         # Store the next publish date
-        self.data[self.channelId] = next_publish_date.isoformat()
+        self.data[self.channelId] = arrow.get(next_publish_date).isoformat()
         self.save_data()
 
-        return next_publish_date.isoformat()
+        return arrow.get(next_publish_date).isoformat()
     
     def get_metadata(self, title, description, tags):
         next_publish_date = self.get_next_publish_date()

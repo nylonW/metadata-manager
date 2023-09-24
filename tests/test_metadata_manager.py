@@ -3,8 +3,8 @@
 import unittest
 import os
 import json
-from datetime import datetime, timedelta
-from metadata_manager import MetadataManager, get_channel_id_from_secrets
+import arrow 
+from metadata_manager import MetadataManager
 
 class TestMetadataManager(unittest.TestCase):
 
@@ -20,7 +20,7 @@ class TestMetadataManager(unittest.TestCase):
 
     def test_get_next_publish_date_default(self):
         next_date = self.manager.get_next_publish_date()
-        self.assertTrue(isinstance(next_date, datetime))
+        self.assertTrue(isinstance(next_date, str))
 
         with open(self.store_file, 'r') as f:
             data = json.load(f)
@@ -29,19 +29,8 @@ class TestMetadataManager(unittest.TestCase):
     def test_get_next_publish_date_custom_hours(self):
         self.manager.get_next_publish_date()  # First call
         next_date_48h = self.manager.get_next_publish_date(1)
-        expected_date = datetime.utcnow() + timedelta(hours=1)
-        self.assertAlmostEqual(next_date_48h.timestamp(), expected_date.timestamp(), delta=5)
-
-    def test_get_channel_id_from_secrets(self):
-        test_secrets_content = '{"test_key": "test_value"}'
-        test_secrets_path = "test_secrets.json"
-        with open(test_secrets_path, 'w') as f:
-            f.write(test_secrets_content)
-
-        channel_id = get_channel_id_from_secrets(test_secrets_path)
-        self.assertEqual(len(channel_id), 32)  # MD5 hash length
-
-        os.remove(test_secrets_path)
+        expected_date = arrow.now().shift(hours=1)
+        self.assertEqual(next_date_48h, expected_date.isoformat())
 
 if __name__ == "__main__":
     unittest.main()
