@@ -46,7 +46,7 @@ class MetadataManager:
         self.data[self.channelId] = next_publish_date.strftime("%Y-%m-%dT%H:%M:%S%z")
         self.save_data()
 
-        return next_publish_date.strftime("%Y-%m-%dT%H:%M:%S")
+        return next_publish_date.strftime("%Y-%m-%dT%H:%M:%S%z")
     
     def get_metadata(self, title, description, tags):
         next_publish_date = self.get_next_publish_date()
