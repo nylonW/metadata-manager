@@ -37,13 +37,13 @@ class MetadataManager:
     def get_next_publish_date(self, hours=24):
         last_publish_date = self.data.get(self.channelId, None)
         if last_publish_date:
-            last_publish_date = datetime.strptime(last_publish_date, "%Y-%m-%dT%H:%M:%S")
+            last_publish_date = datetime.strptime(last_publish_date, "%Y-%m-%dT%H:%M:%S%z")
             next_publish_date = last_publish_date + timedelta(hours=hours)
         else:
             next_publish_date = datetime.utcnow()
 
         # Store the next publish date
-        self.data[self.channelId] = next_publish_date.strftime("%Y-%m-%dT%H:%M:%S")
+        self.data[self.channelId] = next_publish_date.strftime("%Y-%m-%dT%H:%M:%S%z")
         self.save_data()
 
         return next_publish_date.strftime("%Y-%m-%dT%H:%M:%S")
