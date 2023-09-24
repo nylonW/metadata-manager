@@ -3,7 +3,7 @@
 import os
 import json
 import hashlib
-from datetime import datetime, timedelta
+import arrow
 
 # Example metadata file
 # {
@@ -34,19 +34,20 @@ class MetadataManager:
         with open(self.store_file, 'w') as f:
             json.dump(self.data, f, indent=4)
 
+    # desired format everythere '2020-11-25T08:10:39.672624+01:00'
     def get_next_publish_date(self, hours=24):
         last_publish_date = self.data.get(self.channelId, None)
         if last_publish_date:
-            last_publish_date = datetime.strptime(last_publish_date, "%Y-%m-%dT%H:%M:%S%z")
-            next_publish_date = last_publish_date + timedelta(hours=hours)
+            last_publish_date = arrow.get(last_publish_date)
+            next_publish_date = last_publish_date.shift(hours=hours)
         else:
-            next_publish_date = datetime.utcnow()
+            next_publish_date = arrow.now().isoformat()
 
         # Store the next publish date
-        self.data[self.channelId] = next_publish_date.strftime("%Y-%m-%dT%H:%M:%S%z")
+        self.data[self.channelId] = next_publish_date.isoformat()
         self.save_data()
 
-        return next_publish_date.strftime("%Y-%m-%dT%H:%M:%S%z")
+        return next_publish_date.isoformat()
     
     def get_metadata(self, title, description, tags):
         next_publish_date = self.get_next_publish_date()

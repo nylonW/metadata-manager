@@ -5,6 +5,6 @@ setup(
     version="0.3",
     packages=find_packages(),
     install_requires=[
-        # any dependencies your project needs
+       'arrow'
     ],
 )
